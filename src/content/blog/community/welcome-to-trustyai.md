@@ -1,0 +1,61 @@
+---
+title: "Welcome to TrustyAI: Making AI Safety Practical and Accessible"
+description: "Hello and welcome to the TrustyAI blog! We're excited to launch it and share our journey toward creating trustworthy artificial intelligence."
+pubDate: 2025-06-25
+heroImage: "/blog-placeholder-1.jpg"
+track: "community"
+---
+
+# **Welcome to TrustyAI: Making AI Safety Practical and Accessible**
+
+Hello and welcome to the TrustyAI blog\! We're excited to launch it and share our journey toward creating trustworthy artificial intelligence.
+
+## **Why Are We Here?**
+
+In today's rapidly evolving technological landscape, AI is becoming an integral part of our lives, powering everything from daily apps to complex systems in healthcare, finance, and beyond. While this is exciting, the focus on "what AI can do" has overshadowed "how it can do it safely," creating a gap that researchers call an **"alignment tax"** \- the extra cost to ensure AI systems behave as intended. Without proper tools and frameworks, the alignment tax compounds over time, placing an increasing burden on developers and organizations.
+
+The opportunity lies in transforming AI safety from an expensive afterthought into an integrated practice that enables – rather than hinders – innovation. That's where TrustyAI comes in:
+
+_We aim to make AI safety both practical and accessible. **Practical** in the sense that you can implement it today, reducing complexity to facilitate adoption by developers and organizations in real-world environments, and **Accessible** in the sense that our tools are open source and free from vendor lock-in._
+
+More specifically, we aim to make AI **trustworthy** \- a term we choose deliberately because "AI safety" means different things to different stakeholders. **Trustworthy** **AI** provides a unified framework that transforms how the industry approaches AI development:
+
+**AI Security** becomes seamlessly integrated, protecting systems from external threats, preventing adversarial attacks and data breaches, and ensuring integrity and confidentiality through robust defense mechanisms that don’t slow innovation.
+
+**Responsible AI** shifts from compliance checkbox to a competitive advantage, enabling ethical development and deployment by addressing bias, ensuring fairness, and promoting transparency and accountability in how AI systems make decisions \- creating products users actually trust.
+
+**AI Safety** evolves from theoretical concern to practical reality, preventing unintended harmful consequences by ensuring AI systems behave predictably and align with human values, even as they become more capable.
+
+## **The Hats That We Wear**
+
+The TrustyAI team wears two hats: **engineering** and **community**. With our engineering hat on, we build tools for
+
+**Explainability** to help practitioners understand individual predictions and overall model behavior;
+
+**Evaluation** to be the central hub for AI evaluation, offering a unified API to access popular benchmarking, red-teaming frameworks for LLMs and agentic systems;
+
+**Guardrails** to implement protection against different attacks and also uphold an organization's standards, policies, and values; and
+
+**Agentic Trustworthiness** to establish thought leadership through dedicated research and development.
+
+Crucially, we bring a holistic view of how these tools work together, and provide consistent APIs across diverse targets and platforms. This way, you might evaluate your model for specific risks, then implement protective measures such as content filtering based on the results, and finally confirm effectiveness through another round of evaluation. Or, use observability traces as inputs to explainability tools to understand not just what your model decided, but why.
+
+With **our community hat** on, we are committed to developing open source tools that enable trustworthy AI without vendor lock-in, sharing knowledge through research findings and educational content, and participating in communities of researchers, developers, policymakers, and users.
+
+## **Our Goals and Vision**
+
+Our goal is to provide practitioners with production-ready trustworthy AI components that work seamlessly together, eliminating the need to cobble together disparate tools or build everything from scratch.
+
+We envision a future in which trustworthy AI development becomes inherently collaborative and accessible. Rather than each organization solving AI safety in isolation, we create shared infrastructure and knowledge that elevates the entire ecosystem, making safe AI deployment the default rather than the exception.
+
+## **Meet The Team**
+
+\<grid of faces w/ links to github/linkedin, can also have a quick blurb about each of us\>
+
+## **Join Our Journey**
+
+We invite you to join us on this exciting journey. Whether you're an AI enthusiast, a developer, or simply someone curious about the future of technology, we believe you'll find valuable insights and resources here.
+
+Stay tuned for our upcoming posts, where we'll delve deeper into our projects, methodologies, and the latest developments in trustworthy AI.
+
+Thank you for being a part of the TrustyAI community\!
