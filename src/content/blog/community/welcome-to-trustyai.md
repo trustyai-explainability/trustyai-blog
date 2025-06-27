@@ -3,6 +3,7 @@ title: "Welcome to TrustyAI: Making AI Safety Practical and Accessible"
 description: "Hello and welcome to the TrustyAI blog! We're excited to launch it and share our journey toward creating trustworthy artificial intelligence."
 pubDate: 2025-06-25
 heroImage: "/blog-placeholder-1.jpg"
+authors: ['trustyai-team']
 track: "community"
 ---
 
