@@ -18,15 +18,13 @@ const getImageUrl = (heroImage) => {
 
 // Helper function to get the correct post URL
 const getPostUrl = (post) => {
-	const baseUrl = import.meta.env.BASE_URL === '/' ? '' : import.meta.env.BASE_URL;
-	
 	if (post.data.track === 'research') {
-		return `${baseUrl}/research/${post.id.replace('research/', '')}`;
+		return `${import.meta.env.BASE_URL}/research/${post.id.replace('research/', '')}`;
 	} else if (post.data.track === 'engineering') {
-		return `${baseUrl}/engineering/${post.id.replace('engineering/', '')}`;
+		return `${import.meta.env.BASE_URL}/engineering/${post.id.replace('engineering/', '')}`;
 	} else {
 		// For posts not in subdirectories
-		return `${baseUrl}/blog/${post.id}`;
+		return `${import.meta.env.BASE_URL}/blog/${post.id}`;
 	}
 };
 ---
