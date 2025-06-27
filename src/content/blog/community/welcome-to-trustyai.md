@@ -6,8 +6,6 @@ heroImage: "/blog-placeholder-1.jpg"
 track: "community"
 ---
 
-# **Welcome to TrustyAI: Making AI Safety Practical and Accessible**
-
 Hello and welcome to the TrustyAI blog\! We're excited to launch it and share our journey toward creating trustworthy artificial intelligence.
 
 ## **Why Are We Here?**
