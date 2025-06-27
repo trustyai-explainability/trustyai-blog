@@ -1,0 +1,95 @@
+---
+interface TeamMember {
+	name: string;
+	avatar: string;
+	slug: string;
+}
+
+interface Props {
+	members: TeamMember[];
+}
+
+const { members } = Astro.props;
+---
+
+<div class="team-grid">
+	{members.map((member) => (
+		<a href={`/authors/${member.slug}`} class="team-member">
+			<div class="member-avatar">
+				<img src={member.avatar} alt={`${member.name} avatar`} />
+			</div>
+			<div class="member-info">
+				<h3 class="member-name">{member.name}</h3>
+			</div>
+		</a>
+	))}
+</div>
+
+<style>
+	.team-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 2rem;
+		margin: 2rem 0;
+	}
+
+	.team-member {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		padding: 1.5rem;
+		border-radius: 12px;
+		background: rgba(var(--accent), 0.05);
+		border: 1px solid rgba(var(--accent), 0.1);
+		transition: all 0.3s ease;
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.team-member:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 8px 25px rgba(var(--accent), 0.15);
+		border-color: rgba(var(--accent), 0.2);
+		text-decoration: none;
+		color: inherit;
+	}
+
+	.member-avatar {
+		width: 120px;
+		height: 120px;
+		border-radius: 50%;
+		overflow: hidden;
+		margin-bottom: 1rem;
+		border: 3px solid rgba(var(--accent), 0.2);
+	}
+
+	.member-avatar img {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+
+	.member-name {
+		font-size: 1.25rem;
+		font-weight: 600;
+		margin: 0;
+		color: rgb(var(--black));
+	}
+
+	@media (max-width: 768px) {
+		.team-grid {
+			grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+			gap: 1.5rem;
+		}
+
+		.team-member {
+			padding: 1rem;
+		}
+
+		.member-avatar {
+			width: 100px;
+			height: 100px;
+		}
+	}
+</style> 
