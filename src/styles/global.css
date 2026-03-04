@@ -85,6 +85,19 @@ input {
 }
 table {
 	width: 100%;
+	border-collapse: collapse;
+}
+table td, table th {
+	border: 1px solid #ddd;
+	padding: 8px;
+	vertical-align: top;
+}
+table th {
+	background-color: #f5f5f5;
+	font-weight: bold;
+}
+table tbody tr:nth-child(even) {
+	background-color: #fafafa;
 }
 img {
 	max-width: 100%;

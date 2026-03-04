@@ -4,6 +4,7 @@ import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 import { visit } from 'unist-util-visit';
 import rehypeMermaid from 'rehype-mermaid';
+import rehypeRaw from 'rehype-raw';
 
 // Site configuration for https://blog.trustyai.org
 const siteUrl = 'https://blog.trustyai.org';
@@ -55,6 +56,6 @@ export default defineConfig({
 			excludeLangs: ['mermaid']
 		},
 		remarkPlugins: [remarkBaseUrl],
-		rehypePlugins: [[rehypeMermaid, { strategy: 'img-svg', dark: true, colorScheme: 'forest' }]]
+		rehypePlugins: [rehypeRaw, [rehypeMermaid, { strategy: 'pre-mermaid' }]]
 	},
 });
