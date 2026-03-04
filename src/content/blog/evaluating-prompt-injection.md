@@ -1,9 +1,10 @@
 ---
 title: 'Evaluating prompt injection guardrails' 
 description: '"A comprehensive evaluation of lightweight open-source prompt injection guardrail models, testing their effectiveness against diverse attack vectors"'
-pubDate: 'Feb 24 2025'
+pubDate: 'Mar 04 2026'
 heroImage: '/blog-placeholder-3.jpg'
 track: 'community'
+tags: ['safety', 'guardrails']
 authors: ['mac']
 ---
 
