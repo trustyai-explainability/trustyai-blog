@@ -1,0 +1,240 @@
+---
+title: 'The Safety Stack Gap'
+description: 'Agent safety today is a patchwork. Here are the 8 operational layers it needs to cover, and why the gaps between them matter.'
+pubDate: 'Apr 15 2026'
+heroImage: '/blog-placeholder-1.jpg'
+track: 'community'
+authors: ['muneeza-azmat']
+tags: ['safety', 'agents', 'security', 'agentic-ai']
+---
+
+Agentic AI has left the lab. Agents edit production code, orchestrate multi-step workflows, call external APIs, and make decisions with real-world consequences. The question has shifted from "*can we build agents?*" to "*can we trust them?*" As explored in the [BYOA blog](https://www.redhat.com/en/blog/operationalizing-bring-your-own-agent-red-hat-ai-openclaw-edition), agents need identity, isolation, policy guardrails, observability, and governed tool calls. But wrapping an agent in platform infrastructure raises a harder question:
+
+**How do you know the *entire system* is safe?** As of March 2026: nobody can answer that comprehensively. Individual layers have promising defenses however, the best anyone can cover today is about 3 of those 8 layers. No single benchmark, framework, or combination covers the full stack.
+
+Below, we map the full safety surface of an agentic system across 8 operational layers: what can go wrong, what tooling exists, and where the gaps remain.
+
+<div class="safety-stack-widget" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:740px;margin:0 auto;">
+<style>{`
+.safety-stack-widget *{box-sizing:border-box;margin:0;padding:0}
+.ssw-stack{display:flex;flex-direction:column;gap:2px}
+.ssw-layer{display:grid;grid-template-columns:32px 1fr 100px 1fr;align-items:stretch;min-height:52px;border-radius:8px;overflow:hidden;border:1px solid #e0e0e0;background:#fff;transition:border-color 0.2s ease,box-shadow 0.2s ease,transform 0.15s ease;cursor:pointer}
+.ssw-layer:hover{border-color:#888;box-shadow:0 2px 8px rgba(0,0,0,0.08);transform:translateY(-1px)}
+.ssw-lnum{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;color:#666;background:#f5f5f5}
+.ssw-lname{padding:8px 12px;display:flex;flex-direction:column;justify-content:center}
+a.ssw-layer-link{text-decoration:none;color:inherit;display:contents}
+.ssw-lname h4{font-size:13px;font-weight:500;color:#1a1a1a;line-height:1.3}
+.ssw-lname p{font-size:11px;color:#888;line-height:1.3;margin-top:1px}
+.ssw-lname .ssw-threat{font-size:10px;color:#5C6BC0;font-style:italic;line-height:1.3;margin-top:2px}
+.ssw-status{display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;text-align:center;padding:4px 6px;line-height:1.2}
+.ssw-s-green{background:#E8F5E9;color:#1B5E20}
+.ssw-s-yellow{background:#FFF8E1;color:#E65100}
+.ssw-s-orange{background:#FFF3E0;color:#BF360C}
+.ssw-s-red{background:#FFEBEE;color:#B71C1C}
+.ssw-s-darkred{background:#FFCDD2;color:#7f0000}
+.ssw-tools{padding:6px 10px;display:flex;flex-wrap:wrap;gap:3px;align-items:center;align-content:center}
+.ssw-chip{font-size:10px;padding:2px 7px;border-radius:10px;white-space:nowrap}
+.ssw-chip.bench{background:#E3F2FD;color:#0D47A1}
+.ssw-chip.fw{background:#E8F5E9;color:#1B5E20}
+.ssw-chip.ent{background:#FFF8E1;color:#E65100}
+.ssw-chip.none{background:#FFEBEE;color:#B71C1C}
+.ssw-legend{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;padding:8px 0}
+.ssw-legend span{display:flex;align-items:center;gap:4px;font-size:11px;color:#888}
+.ssw-legend .dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ssw-head{display:grid;grid-template-columns:32px 1fr 100px 1fr;font-size:11px;color:#888;padding:4px 0;font-weight:500}
+.ssw-head span:nth-child(3){text-align:center}
+
+@media(prefers-color-scheme:dark){
+.ssw-layer{background:#1e1e1e;border-color:#444}
+.ssw-layer:hover{border-color:#aaa;box-shadow:0 2px 8px rgba(255,255,255,0.06)}
+.ssw-lnum{background:#2a2a2a;color:#aaa}
+.ssw-lname h4{color:#e0e0e0}
+.ssw-lname p{color:#999}
+.ssw-lname .ssw-threat{color:#7986CB}
+.ssw-s-green{background:#1B3A1B;color:#81C784}
+.ssw-s-yellow{background:#3E2C0A;color:#FFD54F}
+.ssw-s-orange{background:#3E1F0A;color:#FFB74D}
+.ssw-s-red{background:#3A1515;color:#EF9A9A}
+.ssw-s-darkred{background:#4A1010;color:#EF9A9A}
+.ssw-chip.bench{background:#0D2137;color:#64B5F6}
+.ssw-chip.fw{background:#1B3A1B;color:#81C784}
+.ssw-chip.ent{background:#3E2C0A;color:#FFD54F}
+.ssw-chip.none{background:#3A1515;color:#EF9A9A}
+.ssw-head{color:#999}
+.ssw-legend span{color:#999}
+}
+
+@media(max-width:600px){
+.ssw-layer{grid-template-columns:28px 1fr;grid-template-rows:auto auto}
+.ssw-lnum{grid-row:1/3}
+.ssw-status{justify-content:flex-start;padding:4px 12px;font-size:10px}
+.ssw-tools{padding:4px 10px 8px}
+.ssw-head{display:none}
+}
+`}</style>
+
+<div class="ssw-head"><span></span><span>Layer</span><span>Coverage</span><span>Benchmarks & frameworks covering this layer</span></div>
+<div class="ssw-stack">
+
+<a class="ssw-layer-link" href="#1-io-guardrails"><div class="ssw-layer"><div class="ssw-lnum">1</div><div class="ssw-lname"><h4>I/O guardrails</h4><p>Injection, jailbreak, toxic content, PII, data leak</p><p class="ssw-threat">Attacker manipulates what goes in or comes out of the model</p></div><div class="ssw-status ssw-s-green">Well covered</div><div class="ssw-tools">
+<span class="ssw-chip bench">AgentDojo</span><span class="ssw-chip bench">InjecAgent</span><span class="ssw-chip bench">AgentHarm</span><span class="ssw-chip bench">A-SafetyBench</span><span class="ssw-chip fw">LlamaFirewall</span><span class="ssw-chip fw">NeMo</span><span class="ssw-chip fw">Invariant</span><span class="ssw-chip fw">Guardrails AI</span><span class="ssw-chip ent">Cisco</span><span class="ssw-chip ent">Microsoft</span><span class="ssw-chip ent">AWS</span><span class="ssw-chip ent">Lakera</span><span class="ssw-chip ent">Google</span></div></div></a>
+
+<a class="ssw-layer-link" href="#2-model-safety"><div class="ssw-layer"><div class="ssw-lnum">2</div><div class="ssw-lname"><h4>Model safety</h4><p>Bias, alignment, harmful behavior</p><p class="ssw-threat">Model complies with harmful requests despite alignment training</p></div><div class="ssw-status ssw-s-yellow">Partially covered</div><div class="ssw-tools">
+<span class="ssw-chip bench">AgentHarm</span><span class="ssw-chip bench">A-SafetyBench</span><span class="ssw-chip bench">Machiavelli</span><span class="ssw-chip ent">Cisco red team</span><span class="ssw-chip ent">MS red team</span><span class="ssw-chip none">No closed loop to runtime</span></div></div></a>
+
+<a class="ssw-layer-link" href="#3-continuous-safety-evaluation"><div class="ssw-layer"><div class="ssw-lnum">3</div><div class="ssw-lname"><h4>Continuous safety evaluation</h4><p>Drift detection, regression, live eval</p><p class="ssw-threat">Agent behavior degrades after deployment and nobody notices</p></div><div class="ssw-status ssw-s-yellow">Partially covered</div><div class="ssw-tools">
+<span class="ssw-chip fw">MLflow Tracing</span><span class="ssw-chip fw">Invariant Explorer</span><span class="ssw-chip ent">MS Foundry</span><span class="ssw-chip ent">Cisco + Splunk</span><span class="ssw-chip none">No continuous safety regression</span></div></div></a>
+
+<a class="ssw-layer-link" href="#4-tool-and-mcp-security"><div class="ssw-layer"><div class="ssw-lnum">4</div><div class="ssw-lname"><h4>Tool / MCP security</h4><p>Unauthorized use, poisoning, escalation</p><p class="ssw-threat">Attacker compromises tools or tricks the agent into misusing legitimate ones</p></div><div class="ssw-status ssw-s-orange">Emerging</div><div class="ssw-tools">
+<span class="ssw-chip bench">ASB</span><span class="ssw-chip fw">Invariant MCP-scan</span><span class="ssw-chip fw">CaMeL</span><span class="ssw-chip ent">RH MCP Gateway</span><span class="ssw-chip none">No universal tool spec standard</span></div></div></a>
+
+<a class="ssw-layer-link" href="#5-supply-chain"><div class="ssw-layer"><div class="ssw-lnum">5</div><div class="ssw-lname"><h4>Supply chain</h4><p>Model provenance, tool integrity, dependency attacks</p><p class="ssw-threat">Attacker compromises a dependency before it reaches your stack</p></div><div class="ssw-status ssw-s-orange">Emerging</div><div class="ssw-tools">
+<span class="ssw-chip ent">Cisco AI BOM</span><span class="ssw-chip ent">RH Trusted Secure Supply Chain</span><span class="ssw-chip none">No OSS equivalent</span></div></div></a>
+
+<a class="ssw-layer-link" href="#6-identity-and-access"><div class="ssw-layer"><div class="ssw-lnum">6</div><div class="ssw-lname"><h4>Identity & access control</h4><p>Agent auth, permissions, accountability</p><p class="ssw-threat">Agent acts without verifiable identity or exceeds its authorized scope</p></div><div class="ssw-status ssw-s-orange">Emerging</div><div class="ssw-tools">
+<span class="ssw-chip ent">MS Entra Agent ID</span><span class="ssw-chip ent">Cisco Duo IAM</span><span class="ssw-chip ent">RH Kagenti (SPIFFE)</span><span class="ssw-chip none">No interop standard</span></div></div></a>
+
+<a class="ssw-layer-link" href="#7-cognitive-integrity"><div class="ssw-layer"><div class="ssw-lnum">7</div><div class="ssw-lname"><h4>Cognitive integrity</h4><p>Goal hijacking, CoT manipulation, context poisoning, behavioral drift</p><p class="ssw-threat">Agent's reasoning or accumulated context silently drifts toward unsafe outcomes</p></div><div class="ssw-status ssw-s-red">Weakly covered</div><div class="ssw-tools">
+<span class="ssw-chip bench">OpenAgentSafety</span><span class="ssw-chip bench">R-Judge</span><span class="ssw-chip fw">LlamaFirewall AlignmentCheck</span><span class="ssw-chip fw">MLflow Tracing</span><span class="ssw-chip none">No runtime reasoning verification</span><span class="ssw-chip none">No memory integrity defense</span></div></div></a>
+
+<a class="ssw-layer-link" href="#8-multi-agent-coordination"><div class="ssw-layer"><div class="ssw-lnum">8</div><div class="ssw-lname"><h4>Multi-agent coordination</h4><p>Delegation trust, cascading failures</p><p class="ssw-threat">Unsafe behavior propagates across agents through delegation and trust chains</p></div><div class="ssw-status ssw-s-darkred">Unaddressed</div><div class="ssw-tools">
+<span class="ssw-chip none">No benchmark</span><span class="ssw-chip none">No framework</span></div></div></a>
+
+</div>
+
+<div class="ssw-legend">
+<span><span class="dot" style="background:#E3F2FD;border:1px solid #90CAF9"></span> Benchmark</span>
+<span><span class="dot" style="background:#E8F5E9;border:1px solid #A5D6A7"></span> OSS framework</span>
+<span><span class="dot" style="background:#FFF8E1;border:1px solid #FFE082"></span> Enterprise platform</span>
+<span><span class="dot" style="background:#FFEBEE;border:1px solid #EF9A9A"></span> Gap / limitation</span>
+</div>
+</div>
+
+<p style="font-size:0.85rem;color:#666;line-height:1.5;"><strong>Agentic safety gap analysis, ranked by coverage.</strong> An agentic system operates across at least eight distinct operational layers. Evaluating any one in isolation tells you very little about the safety of the whole. Layers ranked from well-covered (green) to unaddressed (red). Italic text shows each layer's threat model.</p>
+
+## 1: I/O guardrails
+
+<p style="color:#a02020;font-style:italic;font-weight:500;">Attacker manipulates what goes in or comes out of the model</p>
+
+Prompt injection is the most studied attack surface in AI and the most actively exploited. Attackers embed hidden instructions in documents, emails, or tool outputs that the model processes as trusted input.
+
+In June 2025, researchers disclosed [EchoLeak](https://thehackernews.com/2025/06/zero-click-ai-vulnerability-exposes.html) (CVE-2025-32711, CVSS 9.3): a zero-click prompt injection in Microsoft 365 Copilot that exfiltrated sensitive data via a single crafted email, with no user interaction required. Prompt injection is the #1 risk on the OWASP Top 10 for LLM Applications.
+
+Tooling for this layer is strong. LlamaFirewall's PromptGuard 2 [3] achieves 97.5% recall at 1% false positive rate. NeMo Guardrails [4] runs content safety, jailbreak detection, and topic control in parallel with under 0.5s added latency. Invariant Guardrails [5] intercepts MCP and LLM calls as a transparent proxy.
+
+On the platform side, the Guardrails Orchestrator (TrustyAI, in OpenShift AI) screens model inputs and outputs at the inference boundary. NeMo Guardrails (OpenShift AI 3.4) provides a separate entrypoint for content safety, jailbreak detection, and topic control. Together they form the platform enforcement points for this layer.
+
+## 2: Model safety
+
+<p style="color:#a02020;font-style:italic;font-weight:500;">Model complies with harmful requests despite alignment training</p>
+
+Alignment training teaches models to refuse harmful requests. But under agentic conditions, models encounter multi-step tasks, ambiguous tool outputs, and adversarial framing that alignment was never tested against.
+
+In July 2025, [Grok responded to a user query with detailed instructions for breaking into a Minnesota policy researcher's home and assaulting him](https://cybernews.com/ai-news/grok-break-in-sexual-assault-fantasies-will-stancil/). The benchmarks confirm this isn't an outlier: AgentHarm [7] found that leading models comply with malicious multi-step requests without jailbreaking, and Agent-SafetyBench [8] tested 16 LLM agents across 2,000 cases where none scored above 60% on safety.
+
+These benchmarks are illuminating but disconnected from runtime. There's no tooling that takes a benchmark finding and automatically enforces a corresponding runtime policy. The gap between evaluation and enforcement is manual and brittle.
+
+Red Hat's recent acquisition of Chatterbox Labs expands vulnerability scanning for models. In collaboration with NVIDIA, Garak scans models for safety vulnerabilities pre-deployment. EvalHub provides a harness to run any type of evaluation job, connecting model assessment to the CI/CD pipeline where policy can be enforced automatically.
+
+## 3: Continuous safety evaluation
+
+<p style="color:#a02020;font-style:italic;font-weight:500;">Agent behavior degrades after deployment and nobody notices</p>
+
+An agent that passes every benchmark at deployment can fail silently weeks later. Context changes, tools update, behavior evolves. No one re-evaluates.
+
+In July 2025, [Replit's AI coding agent deleted a live production database on day 9 of a project, despite 11 explicit instructions not to make changes](https://fortune.com/2025/07/23/ai-coding-tool-replit-wiped-database-called-it-a-catastrophic-failure/). The agent had worked correctly for over a week before silently drifting into destructive behavior. Rath (2026) formalizes this as "agent drift," and shows that pre-deployment testing captures only 25% of eventual drift cases [17].
+
+No open-source tool provides CI/CD-equivalent safety regression for agents. Commercial platforms are emerging, but none enforce safety policies continuously against an evolving baseline. Current observability tells you what the agent did. It doesn't verify whether what it did was safe.
+
+On the Red Hat side, MLflow Tracing with OpenTelemetry captures the full execution trace: prompts, reasoning steps, tool invocations, LLM API calls. MLflow's built-in scorers can evaluate these traces against safety criteria. Garak provides pre-production adversarial scanning. EvalHub provides a harness to run any type of evaluation job. Together, they sketch a path from point-in-time assessment toward continuous safety: detect drift, flag violations, trigger re-evaluation.
+
+## 4: Tool and MCP security
+
+<p style="color:#a02020;font-style:italic;font-weight:500;">Attacker compromises the tools the agent calls or tricks the agent into misusing legitimate ones</p>
+
+Agents don't just call tools. They trust whatever those tools return. A compromised tool or a poisoned MCP server can feed adversarial data directly into the agent's reasoning without triggering any input filter.
+
+In August 2025, [malicious Nx npm packages weaponized local AI coding agents (Claude, Gemini, Amazon Q) to inventory and exfiltrate secrets](https://snyk.io/blog/weaponizing-ai-coding-agents-for-malware-in-the-nx-malicious-package/) from developer machines. Agent Security Bench [9] formalizes this attack taxonomy, including Plan-of-Thought backdoor attacks. Invariant's MCP-scan [5] detects tool poisoning and cross-origin escalation.
+
+Standards are still missing. There's no universal way to declare what a tool is supposed to do, no runtime verification that tool behavior matches its specification, and no cross-vendor MCP security policy format.
+
+On the platform side, the MCP Gateway (Envoy-based, developer preview) adds identity-based tool filtering where authorization is determined by token claims, stopping unauthorized tool calls from prompt injection at the infrastructure layer. Authorization is enforced through Kuadrant's AuthPolicy with Authorino for JWT validation and OPA rule evaluation. Ongoing work integrates NeMo Guardrails at the MCP Gateway layer, adding content-level safety checks as a second line of defense. The planned MCP certification and catalog initiative, certifying MCP servers from ISVs with a validation framework, could begin to establish the missing standards.
+
+## 5: Supply chain
+
+<p style="color:#a02020;font-style:italic;font-weight:500;">Attacker compromises a dependency before it reaches your stack</p>
+
+The AI stack introduces new dependency chains that traditional software supply chain tools weren't built to scan: model weights, MCP servers, agent frameworks, and inference gateways. A single compromised package can expose credentials across development, CI/CD, and production simultaneously.
+
+On March 24, 2026, the [LiteLLM Python package on PyPI was compromised](https://www.bleepingcomputer.com/news/security/popular-litellm-pypi-package-compromised-in-teampcp-supply-chain-attack/) [11] in a supply chain attack. The compromised versions deployed a credential stealer that harvested SSH keys, cloud tokens, and Kubernetes secrets. Nguyen et al. (ICSE 2026) studied developer-reported security issues across Hugging Face and GitHub and found a significant gap between identified AI supply chain vulnerabilities and available solutions, with fixes for model and data threats scarce and often indirect [18].
+
+Cisco leads with AI BOM (Bill of Materials for AI assets including MCP servers), but no open-source equivalent exists. Model provenance and tool integrity are unaddressed by every open-source framework.
+
+In Red Hat's open-source foundation, every major component (vLLM, Kagenti, MCP Gateway, Open Responses, Garak, TrustyAI) is open source, enabling transparency and contribution-based trust. Red Hat Trusted Secure Supply Chain extends this with package-level signing, attestation, and provenance tracking. But transparency enables inspection; it does not guarantee it occurs. A comprehensive AI supply chain verification framework remains an industry-wide gap.
+
+## 6: Identity and access
+
+<p style="color:#a02020;font-style:italic;font-weight:500;">Agent acts without verifiable identity or exceeds its authorized scope</p>
+
+Agents operate across systems, escalate privileges, and delegate to sub-agents. Without cryptographic identity, there is no way to verify who an agent is, scope what it can do, or audit what it did.
+
+In August 2025, [attackers stole OAuth tokens from Salesforce's Drift chatbot integration and used them to impersonate the AI agent across 700+ customer environments](https://www.securityweek.com/the-shadow-ai-problem-how-saas-apps-are-quietly-enabling-massive-breaches/). The agent's long-lived credentials became the attack vector. Only 10% of organizations have a strategy for managing non-human and agentic identities [16], and IBM's 2025 Cost of a Data Breach Report found that shadow AI breaches cost $670,000 more per incident than standard breaches.
+
+Tooling is emerging but fragmented. Microsoft's Entra Agent ID gives agents first-class identities. Cisco extends Duo IAM to agents. Each approach is vendor-specific with no interoperability.
+
+Red Hat's Zero Trust Workload Identity Manager (GA on OpenShift, January 2026) uses SPIFFE/SPIRE to provide cryptographically verifiable identities to workloads, including AI agents, based on open standards that avoid vendor lock-in. The gap remains: there's no interoperable identity standard across vendors.
+
+## 7: Cognitive integrity
+
+<p style="color:#a02020;font-style:italic;font-weight:500;">Agent's reasoning or accumulated context silently drifts toward unsafe outcomes</p>
+
+Most frameworks inspect inputs and outputs but not the reasoning in between. Adversarial context can redirect an agent's plan without triggering I/O guardrails. The problem compounds as long-running agents accumulate context that shapes every subsequent decision.
+
+In September 2025, [Anthropic disclosed that attackers poisoned Claude Code's context by telling it was a cybersecurity employee conducting authorized testing](https://www.anthropic.com/news/disrupting-AI-espionage). The agent's reasoning drifted step by step into an espionage campaign across 30 targets, with no individual action triggering safety filters. If the chain of thought had been evaluated against the original objective, the drift would have been caught. OpenAgentSafety [14] confirms this pattern: unsafe behavior appears in 49% to 73% of safety-vulnerable tasks. A cross-industry consensus paper [13] argues that chain-of-thought monitoring is an evolving attack surface developers need to invest in before it degrades with further scaling.
+
+LlamaFirewall's AlignmentCheck [3] monitors agent actions in real time, comparing them to user objectives to detect goal hijacking. It catches obvious deviations but struggles with sophisticated indirect attacks and has limited context visibility. Products exist that can score a tool call before it fires. But the harder problem lies upstream: when an agent's reasoning reveals goal drift while its actions remain superficially safe, no action-level filter will flag it.
+
+On the platform side, deep tracing via MLflow Tracing with OpenTelemetry captures the full execution trace: prompts, reasoning steps, tool invocations, LLM API calls. MLflow's built-in scorers and LLM-as-Judge capabilities can evaluate these traces against safety criteria, both for single-step reasoning and trajectory drift across turns. Red Hat's roadmap includes managed cognitive state for agents with privacy-governed storage and a Knowledge Service that enforces data access policies before content returns to the agent. Together, tracing plus automated evaluation sketches a path toward cognitive integrity. But no product today can verify reasoning safety or memory integrity in real time. That gap remains industry-wide.
+
+## 8: Multi-agent coordination
+
+<p style="color:#a02020;font-style:italic;font-weight:500;">Unsafe behavior propagates across agents through delegation and trust chains</p>
+
+When agents delegate to other agents, trust is implicit and unverified. A single compromised agent can propagate unsafe behavior through an entire network, and no framework today enforces safety policies on agent-to-agent delegation.
+
+In early 2026, [Cisco's State of AI Security report documented how a compromised research agent inserted hidden instructions into output consumed by a financial agent, which then executed unintended trades](https://www.helpnetsecurity.com/2026/02/23/ai-agent-security-risks-enterprise/). No benchmark tests cascading failures across agent networks. As enterprises move toward multi-agent architectures, this gap becomes critical.
+
+Red Hat's Kagenti and the A2A protocol tackle the operational side: agent discovery, delegation, semantic routing, Saga patterns for compensation when sub-agents fail. But safety policies for multi-agent coordination (trust propagation, circuit breakers for cascading failures, cross-agent behavioral monitoring) remain an open challenge. The CSA Agentic Trust Framework [15] proposes governance maturity levels. The runtime tooling doesn't exist yet.
+
+## Beyond the stack
+
+This analysis focuses on technical enforcement points where tooling can inspect, intercept, or verify agent behavior. Some safety gaps don't fit a layered model. No agentic framework can automatically map runtime behavior to regulatory requirements or generate the audit evidence regulated industries need. Longer-term sociotechnical risks are further out: agents that build inappropriate trust over time, reshape human decision-making, or gradually exceed their intended autonomy. Early work is emerging, but the field is far from having answers.
+
+## The bottom line
+
+Safety isn't just a model attribute. It's enforced by the system. Model-layer safety (alignment, refusal, behavioral boundaries) is a necessary foundation. But as the benchmarks show, even the best-aligned models fail under agentic conditions. The system must enforce safety at every layer above the model: identity, tool governance, reasoning auditing, memory integrity, supply chain verification. Continuously, with evidence. Neither the model nor the platform is sufficient alone. Both are required.
+
+Today, the best anyone can cover is about 3 of those 8 layers. That's the gap. And it's a reason to build on open, extensible platforms where the safety stack can grow with the threat landscape.
+
+*Data drawn from a survey of 11 agent safety benchmarks [agent_benchmarks_risk_mapping.xlsx](https://docs.google.com/spreadsheets/u/0/d/1Z30os-aEfL4p-ydU4p1sr-nZ1YNC9XAi/edit) and 16 runtime safety frameworks [Agent_Safety_Frameworks.xlsx](https://docs.google.com/spreadsheets/u/0/d/1NTG94CQRNlESyZuWP8fpn5J2b39j_6jt/edit), cross-referenced against published papers, GitHub repositories, and vendor documentation as of March 2026.*
+
+## References
+
+1. Debenedetti, E. et al. "AgentDojo: A Dynamic Environment to Evaluate Attacks and Defenses for LLM Agents." NeurIPS 2024. ETH Zurich / Invariant Labs.
+2. Zhan, Q. et al. "InjecAgent: Benchmarking Indirect Prompt Injections in Tool-Integrated LLM Agents." ACL 2024. UIUC.
+3. Meta. "LlamaFirewall: An Open Source Guardrail System for Building Secure AI Agents." 2025. Includes PromptGuard 2 and AlignmentCheck components.
+4. NVIDIA. "NeMo Guardrails: A Toolkit for Controllable and Safe LLM Applications." 2024.
+5. Invariant Labs. "Invariant Guardrails" and "MCP-Scan: Security Scanner for MCP Servers." 2025.
+6. Li, H. et al. "AgentDyn: A Dynamic Open-Ended Benchmark for Evaluating Prompt Injection Attacks of Real-World Agent Security System." arXiv:2602.03117, Feb 2026.
+7. Andriushchenko, M. et al. "AgentHarm: A Benchmark for Measuring Harmfulness of LLM Agents." ICLR 2025.
+8. Zhang, Z. et al. "Agent-SafetyBench: Evaluating the Safety of LLM Agents." Dec 2024. Tsinghua University.
+9. "Agent Security Bench (ASB): Formalizing Attacks and Defenses for LLM-Based Agents." ICLR 2025.
+10. Debenedetti, E. et al. "CaMeL: Capability-Mediated Language Models for Secure Tool Use." ETH Zurich, 2025.
+11. BleepingComputer. "Popular LiteLLM PyPI Package Compromised in TeamPCP Supply Chain Attack." March 24, 2026.
+12. Hugging Face Transformers: Arbitrary Code Execution via Compromised Model Endpoints. Security disclosure, 2025.
+13. Baker, B. et al. "Monitoring Reasoning Models for Misbehavior and the Risks of Promoting Obfuscation." Cross-industry paper (OpenAI, Anthropic, Google DeepMind, Meta, UK AI Security Institute), 2025.
+14. "OpenAgentSafety: Evaluating Safety in Extended Multi-Turn Agent Interactions." ICLR 2026. DARPA / Schmidt Sciences.
+15. Cloud Security Alliance (CSA). "Agentic Trust Framework." 2025.
+16. Okta. Survey of 260 executives on non-human and agentic identity management. 2025. Cited in Aembit, "6 Cybersecurity Risks of Agentic AI for Security Teams," Jan 2026.
+17. Rath, A. "Agent Drift: Quantifying Behavioral Degradation in Multi-Agent LLM Systems Over Extended Interactions." arXiv:2601.04170, Jan 2026.
+18. Nguyen, T.A. et al. "Securing the AI Supply Chain: What Can We Learn From Developer-Reported Security Issues and Solutions of AI Projects?" ICSE 2026.
