@@ -10,7 +10,7 @@ tags: ['safety', 'agents', 'security', 'agentic-ai']
 
 Agentic AI has left the lab. Agents edit production code, orchestrate multi-step workflows, call external APIs, and make decisions with real-world consequences. The question has shifted from "*can we build agents?*" to "*can we trust them?*" As explored in the [BYOA blog](https://www.redhat.com/en/blog/operationalizing-bring-your-own-agent-red-hat-ai-openclaw-edition), agents need identity, isolation, policy guardrails, observability, and governed tool calls. But wrapping an agent in platform infrastructure raises a harder question:
 
-**How do you know the *entire system* is safe?** As of March 2026: nobody can answer that comprehensively. Individual layers have promising defenses however, the best anyone can cover today is about 3 of those 8 layers. No single benchmark, framework, or combination covers the full stack.
+**How do you know the *entire system* is safe?** As of April 2026: nobody can answer that comprehensively. Individual layers have promising defenses however, the best anyone can cover today is about 3 of those 8 layers. No single benchmark, framework, or combination covers the full stack.
 
 Below, we map the full safety surface of an agentic system across 8 operational layers: what can go wrong, what tooling exists, and where the gaps remain.
 
@@ -204,7 +204,7 @@ When agents delegate to other agents, trust is implicit and unverified. A single
 
 In early 2026, [Cisco's State of AI Security report documented how a compromised research agent inserted hidden instructions into output consumed by a financial agent, which then executed unintended trades](https://www.helpnetsecurity.com/2026/02/23/ai-agent-security-risks-enterprise/). No benchmark tests cascading failures across agent networks. As enterprises move toward multi-agent architectures, this gap becomes critical.
 
-Red Hat's Kagenti and the A2A protocol tackle the operational side: agent discovery, delegation, semantic routing, Saga patterns for compensation when sub-agents fail. But safety policies for multi-agent coordination (trust propagation, circuit breakers for cascading failures, cross-agent behavioral monitoring) remain an open challenge. The CSA Agentic Trust Framework [15] proposes governance maturity levels. The runtime tooling doesn't exist yet.
+Red Hat's Kagenti and the A2A protocol tackle the operational side: agent discovery, delegation, semantic routing, Saga patterns for compensation when sub-agents fail. But safety policies for multi-agent coordination (trust propagation, circuit breakers for cascading failures, cross-agent behavioral monitoring) remain an open challenge. The CSA Agentic Trust Framework [15] proposes governance maturity levels but the runtime tooling doesn't exist yet.
 
 ## Beyond the stack
 
