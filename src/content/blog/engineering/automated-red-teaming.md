@@ -76,6 +76,20 @@ The next step is to review those 4 successful attacks, figure out why they bypas
 
 ## Running it
 
-The pipeline runs on OpenShift AI and can be triggered with a single API call to EvalHub, or submitted directly with the Kubeflow Pipelines Python SDK. You can follow the pipeline execution (including logs and input/output parameters) in the Data Science Pipelines UI. Results can optionally be exported to MLflow for tracking across multiple assessment runs.
+This feature is available as a Technology Preview in **Red Hat OpenShift AI 3.4**. You need the following components on your cluster:
+
+- **Data Science Pipelines** (Kubeflow Pipelines backend) with a configured pipeline server
+- **KServe with vLLM** serving at least two model endpoints: the target model under test and a challenger model for prompt generation.
+- **S3-compatible storage** (e.g. MinIO) for pipeline artifacts and reports
+- **EvalHub** (optional) for a simpler API-driven experience and MLflow integration
+
+![ART architecture diagram](/ART-architecture.svg)
+
+You can trigger an assessment in two ways:
+
+1. **EvalHub API.** Submit a JSON request to `$EVALHUB_URL/api/v1/evaluations/jobs`. EvalHub orchestrates the pipeline, collects results, and optionally logs them to MLflow.
+2. **KFP Python SDK.** Submit the pipeline directly using the `garak_pipeline` Python package. This does not require EvalHub and gives you programmatic control over execution and result retrieval.
+
+Both methods run the same three-stage pipeline inside Data Science Pipelines: SDG (prompt generation), Garak (attack scan), and report generation. You can follow the execution, including logs and input/output parameters, in the Data Science Pipelines UI.
 
 For the full setup and configuration details, see the [Evaluating AI systems](https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/3.4/html/evaluating_ai_systems/index) documentation.
