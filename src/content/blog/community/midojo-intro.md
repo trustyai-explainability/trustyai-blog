@@ -16,7 +16,7 @@ Concretely, MiDojo follows a man-in-the-middle design: it interposes fake tools 
 
 MiDojo is highly extensible, and it works with the agent you already have. Benchmarks pull their payloads from an attack library tagged against the OWASP Agentic Security taxonomy, so you can test established vulnerability classes out of the box.
 
-In this post we cover the motivation and design principles behind the framework, and also show a hello world example. We will cover more sophisticated scenarios and attacks in a follow up.
+We'll walk through the motivation and design principles behind the framework, then show a hello world example — saving more sophisticated scenarios and attacks for a follow-up.
 
 ## An agent is a system, not a model
 
