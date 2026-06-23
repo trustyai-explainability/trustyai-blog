@@ -8,6 +8,11 @@ authors: ['diego']
 tags: ['security', 'agents', 'red-teaming', 'prompt-injection', 'agentic-ai']
 ---
 
+{/* Slightly smaller code blocks, to roughly match the rendered run-output SVG. Scoped to this post. */}
+<style>{`
+  .prose pre { font-size: 0.8em; }
+`}</style>
+
 Tool-using AI agents are vulnerable to prompt injection: adversarial instructions delivered through their inputs or hidden in the data they read while doing legitimate work. Resisting these attacks is a system-level property — it depends on the LLM, its tools, and their data environment as a unit — yet most red-teaming systems are based on simulations that rarely reflect the agent's actual deployment.
 
 In this post we introduce [MiDojo](https://github.com/asago-ai/midojo) (mid-dojo), a framework that red-teams agents right where they run. It sits in the middle between the agent and the real world planting attacks in the data the agent reads, and then grading not just what the agent *said* but what it actually *did*.
