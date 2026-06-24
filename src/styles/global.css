@@ -46,19 +46,19 @@ h6 {
 	line-height: 1.2;
 }
 h1 {
-	font-size: 3.052em;
+	font-size: 2.488em;
 }
 h2 {
-	font-size: 2.441em;
+	font-size: 2.074em;
 }
 h3 {
-	font-size: 1.953em;
+	font-size: 1.728em;
 }
 h4 {
-	font-size: 1.563em;
+	font-size: 1.44em;
 }
 h5 {
-	font-size: 1.25em;
+	font-size: 1.2em;
 }
 strong,
 b {
@@ -96,10 +96,12 @@ code {
 	background-color: rgb(var(--gray-light));
 	border-radius: 2px;
 	font-family: 'Fira Code', monospace;
+	font-size: 0.8em;
 }
 pre {
 	padding: 1.5em;
 	border-radius: 8px;
+	font-size: 0.72em;
 }
 pre > code {
 	all: unset;
@@ -121,6 +123,18 @@ hr {
 	}
 	main {
 		padding: 1em;
+	}
+	h1 {
+		font-size: 1.9em;
+	}
+	h2 {
+		font-size: 1.6em;
+	}
+	h3 {
+		font-size: 1.4em;
+	}
+	h4 {
+		font-size: 1.25em;
 	}
 }
 
