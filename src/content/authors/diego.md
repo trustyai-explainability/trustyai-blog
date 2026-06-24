@@ -1,5 +1,5 @@
 ---
-name: 'Diego'
+name: 'Diego Maniloff'
 bio: 'Principal Machine Learning Engineer at Red Hat'
 avatar: '/authors/diego.jpg'
 linkedin: 'diegomaniloff'
