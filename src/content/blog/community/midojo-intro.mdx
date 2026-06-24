@@ -11,6 +11,9 @@ tags: ['security', 'agents', 'red-teaming', 'prompt-injection', 'agentic-ai']
 {/* Slightly smaller code blocks, to roughly match the rendered run-output SVG. Scoped to this post. */}
 <style>{`
   .prose pre { font-size: 0.8em; }
+  .prose figure { margin: 1.5em 0; text-align: center; }
+  .prose figure img { max-width: 100%; height: auto; }
+  .prose figcaption { margin-top: 0.5em; font-size: 0.85em; color: rgb(var(--gray)); font-style: italic; }
 `}</style>
 
 Tool-using AI agents are vulnerable to prompt injection: adversarial instructions delivered through their inputs or hidden in the data they read while doing legitimate work. Resisting these attacks is a system-level property — it depends on the LLM, its tools, and their data environment as a unit — yet most red-teaming systems are based on simulations that rarely reflect the agent's actual deployment.
@@ -92,7 +95,10 @@ To the agent, that's a single tool response — there's no marker separating the
 
 ## How it works
 
-![MiDojo architecture: fake tools and a controlled environment sit between the agent and the real world.](/midojo-diagram.svg)
+<figure>
+  <img src="/midojo-diagram.svg" alt="MiDojo architecture: fake tools and a controlled environment sit between the agent and the real world." />
+  <figcaption>Fake tools and a controlled environment sit between the agent and the real world.</figcaption>
+</figure>
 
 A red teaming "suite" is defined as a YAML file. Here's a simplified version of the weather suite:
 
