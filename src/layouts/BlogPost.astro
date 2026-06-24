@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
@@ -8,8 +9,14 @@ import { getBaseUrl } from '../utils/urls';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage, tags } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, tags, authors } = Astro.props;
 const baseUrl = getBaseUrl();
+
+let authorData: CollectionEntry<'authors'>[] = [];
+if (authors && authors.length > 0) {
+	const allAuthors = await getCollection('authors');
+	authorData = allAuthors.filter(author => authors.includes(author.id));
+}
 ---
 
 <html lang="en">
@@ -53,6 +60,37 @@ const baseUrl = getBaseUrl();
 			.last-updated-on {
 				font-style: italic;
 			}
+			.authors {
+				margin: 1em 0;
+				display: flex;
+				flex-wrap: wrap;
+				justify-content: center;
+				gap: 1rem;
+			}
+			.author {
+				display: flex;
+				align-items: center;
+				gap: 0.5rem;
+				padding: 0.5rem;
+				border-radius: 8px;
+				background: rgba(var(--accent-light), 0.1);
+				text-decoration: none;
+				color: inherit;
+				transition: background-color 0.2s ease;
+			}
+			.author:hover {
+				background: rgba(var(--accent-light), 0.2);
+			}
+			.author-avatar {
+				width: 32px;
+				height: 32px;
+				border-radius: 50%;
+				object-fit: cover;
+			}
+			.author-name {
+				font-weight: 500;
+				color: rgb(var(--black));
+			}
 			.tags {
 				display: flex;
 				flex-wrap: wrap;
@@ -95,6 +133,22 @@ const baseUrl = getBaseUrl();
 							}
 						</div>
 						<h1>{title}</h1>
+						{authorData.length > 0 && (
+							<div class="authors">
+								{authorData.map((author) => (
+									<a href={`${baseUrl}/authors/${author.id}/`} class="author">
+										{author.data.avatar && (
+											<img
+												src={author.data.avatar.startsWith('/') ? `${baseUrl}/${author.data.avatar.slice(1)}` : author.data.avatar}
+												alt={author.data.name}
+												class="author-avatar"
+											/>
+										)}
+										<span class="author-name">{author.data.name}</span>
+									</a>
+								))}
+							</div>
+						)}
 						{tags && tags.length > 0 && (
 							<div class="tags">
 								{tags.map((tag) => (
