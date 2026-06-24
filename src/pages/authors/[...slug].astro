@@ -62,7 +62,7 @@ const authorPosts = allPosts.filter(post =>
 						<ul class="post-list">
 							{authorPosts.map((post) => (
 								<li>
-									<a href={`${baseUrl}/${post.id}`}>
+									<a href={`${baseUrl}/blog/${post.id}`}>
 										<div class="post-info">
 											<h3>{post.data.title}</h3>
 											<p>{post.data.description}</p>
