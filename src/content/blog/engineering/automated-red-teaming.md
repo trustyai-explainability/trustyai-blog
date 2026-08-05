@@ -55,7 +55,7 @@ A prompt is marked as unsafe if it received a "complied" classification under _a
 
 ### Interpreting the results
 
-Here’s an example report that has been generated in output as a result of running the automated red teaming pipeline against a Qwen3 model
+Here’s an example report that has been generated in output as a result of running the automated red teaming pipeline against a [Qwen3 model](https://huggingface.co/Qwen/Qwen3-235B-A22B)
 
 ![ART report](/ART-report-unsafe.png)
 
