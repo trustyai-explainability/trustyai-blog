@@ -1,7 +1,7 @@
 ---
 title: 'Automated Red Teaming for LLMs'
 description: 'Why aligned LLMs are still vulnerable to adversarial attacks, the types of threats they face, and how our automated red teaming pipeline identifies safety gaps before attackers do.'
-pubDate: 'Apr 27 2026'
+pubDate: 'August 05 2026'
 heroImage: '/blog-placeholder-2.jpg'
 track: 'engineering'
 authors: ['trustyai-team']
